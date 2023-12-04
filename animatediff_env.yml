@@ -1,0 +1,114 @@
+name: animatediff_pipe
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  python=3.10.8
+  - pip:
+      - colorama == 0.4.3
+      - cmake == 3.25.0
+      - ninja == 1.11.0
+      - numpy == 1.22.4
+      - pillow == 9.4.0
+      - safetensors == 0.3.1
+      - sentencepiece==0.1.99
+      - shellingham==1.5.0
+      - controlnet_aux
+      - accelerate==0.24.1
+      - albumentations==1.3.1
+      - altair==5.1.2
+      - cython==3.0.5
+      - diffusers==0.23.1
+      - dm-tree==0.1.8
+      - easydict==1.11
+      - einops==0.7.0
+      - fastapi==0.104.1
+      - ffmpeg-python==0.2.0
+      - gdown==4.7.1
+      - google-auth==2.23.3
+      - google-auth-oauthlib==1.1.0
+      - google-pasta==0.2.0
+      - gradio==4.3.0
+      - gradio-client==0.7.0
+      - httpcore==1.0.2
+      - httpx==0.25.1
+      - huggingface-hub==0.19.4
+      - humanfriendly==10.0
+      - ifnude==0.0.3
+      - imageio-ffmpeg==0.4.9
+      - importlib-resources==6.1.1
+      - insightface==0.7.3
+      - isoduration==20.11.0
+      - jaxtyping==0.2.23
+      - jsonpointer==2.4
+      - keras==2.15.0
+      - keras-core==0.1.7
+      - lightning-utilities==0.9.0
+      - lpips==0.1.4
+      - matplotlib==3.5.3
+      - mediapipe==0.10.7
+      - mediapy==1.1.9
+      - modules==1.0.0
+      - munch==4.0.0
+      - nbformat==5.7.0
+      - omegaconf==2.3.0
+      - onnx==1.15.0
+      - onnxruntime==1.16.1
+      - onnxruntime-gpu==1.16.2
+      - open3d==0.17.0
+      - opencv-contrib-python==4.8.1.78
+      - opencv-python==4.6.0.66
+      - opencv-python-headless==4.8.1.78
+      - opennsfw2==0.11.0
+      - pathtools==0.1.2
+      - peft==0.6.2
+      - pip==23.3.1
+      - progressbar==2.5
+      - protobuf==3.20.1
+      - psutil==5.9.6
+      - pycocotools==2.0.7
+      - pycollada==0.7.2
+      - pydantic==1.10.0
+      - pydantic-core==2.14.3
+      - pyngrok==7.0.0
+      - pyquaternion==0.9.9
+      - rawpy==0.18.1
+      - rembg==2.0.51
+      - rich==13.6.0
+      - scikit-video==1.1.11
+      - segment-anything-hq==0.3
+      - semantic-version==2.10.0
+      - shapely==1.8.5.post1
+      - simple-websocket==1.0.0
+      - simplejson==3.19.2
+      - sk-video==1.1.10
+      - splines==0.3.0
+      - starlette==0.27.0
+      - tensorboard==2.15.0
+      - tensorboard-data-server==0.7.2
+      - tensorflow==2.15.0
+      - tensorflow-estimator==2.15.0
+      - tensorflow-io-gcs-filesystem==0.34.0
+      - termcolor==2.3.0
+      - timm==0.6.7
+      - tokenizers==0.13.3
+      - tomlkit==0.12.0
+      - torch==2.0.1+cu118
+      - torch-fidelity==0.3.0
+      - torchaudio==2.0.2+cu118
+      - torchmetrics==1.2.0
+      - torchvision==0.15.2+cu118
+      - transformers==4.31.0
+      - trimesh==3.21.7
+      - triton==2.0.0
+      - typeguard==2.13.3
+      - typer==0.9.0
+      - typing-extensions==4.8.0
+      - tyro==0.5.10
+      - viser==0.1.3
+      - wandb==0.15.12
+      - webcolors==1.13
+      - websockets==11.0.3
+      - wsproto==1.2.0
+      - xatlas==0.0.8
+      - yourdfpy==0.0.53
