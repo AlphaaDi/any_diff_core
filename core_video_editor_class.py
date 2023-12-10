@@ -27,9 +27,7 @@ class GeneralCoreVideoEditor:
     def __init__(
         self, device, device_additional, propainter_weights,
         sam_checkpoint, pose_detector_path, yolo_pretrained_model,
-        image_processor_pretrained, upscaler_pretrained,
         neg_prompt_addition, budget, seed, styles_csv_path,
-        animatediff_config_path,
         animatediff_path = '/home/ishpuntov/code/animatediff-cli-prompt-travel',
         output_dir_animatediff = 'output_result_for_script_call',
         output_result_folder = '/home/ishpuntov/code/sam-hq/output_results',
@@ -50,8 +48,8 @@ class GeneralCoreVideoEditor:
         self.yolo_detector_model = torch.hub.load('ultralytics/yolov5', yolo_pretrained_model, pretrained=True)
         self.yolo_detector_model = self.yolo_detector_model.to(self.device)
 
-        self.image_processor = AutoImageProcessor.from_pretrained(image_processor_pretrained)
-        self.upscaler = Swin2SRForImageSuperResolution.from_pretrained(upscaler_pretrained)
+        # self.image_processor = AutoImageProcessor.from_pretrained(image_processor_pretrained)
+        # self.upscaler = Swin2SRForImageSuperResolution.from_pretrained(upscaler_pretrained)
 
         self.neg_prompt_addition = neg_prompt_addition
         self.budget = budget
@@ -65,7 +63,6 @@ class GeneralCoreVideoEditor:
         self.animatediff_path = animatediff_path
         
         self.faces_crop_ration = faces_crop_ration
-        self.animatediff_config_path = animatediff_config_path
         self.output_dir = output_dir_animatediff
         self.delate_pix_inpaint_max = delate_pix_inpaint_max
         
@@ -117,15 +114,15 @@ class GeneralCoreVideoEditor:
                 max_box_size_arr)
     
     
-    def infer_upscaler_on_device(self, imgs):
-        self.upscaler = self.upscaler.to(self.device_additional)
-        upcale_imgs = [
-            process_upscale_img(self.upscaler, self.image_processor, img) 
-            for img in tqdm(imgs, desc='process upscale')
-        ]
-        self.upscaler = self.upscaler.to('cpu')
-        torch.cuda.empty_cache()
-        return upcale_imgs
+    # def infer_upscaler_on_device(self, imgs):
+    #     self.upscaler = self.upscaler.to(self.device_additional)
+    #     upcale_imgs = [
+    #         process_upscale_img(self.upscaler, self.image_processor, img) 
+    #         for img in tqdm(imgs, desc='process upscale')
+    #     ]
+    #     self.upscaler = self.upscaler.to('cpu')
+    #     torch.cuda.empty_cache()
+    #     return upcale_imgs
 
 
     def infer_propainter(self, masks, frames, video_name='propainter_frames_tmp.mp4'):
@@ -140,7 +137,6 @@ class GeneralCoreVideoEditor:
             model_dir=self.propainter_weights
         )
         
-#         inpainted_frames_upcale = self.infer_upscaler_on_device(inpainted_frames)
         inpainted_frames_upcale = inpainted_frames
         
         inpainted_frames = [cv2.resize(
@@ -312,8 +308,6 @@ class GeneralCoreVideoEditor:
                 out_dir=result_path_out,
                 seed=self.seed,
             )
-            
-            # obj_frames = self.infer_upscaler_on_device(obj_frames)
             
             obj_frames_face = process_image_video(face_crops[0], obj_frames)
                 
