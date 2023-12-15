@@ -2,21 +2,20 @@ import os
 from pathlib import Path
 
 from tqdm import tqdm
-import torch
 import cv2
 import skvideo.io
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import shutil
 from PIL import Image
 
 from segment_anything_hq import SamPredictor, sam_model_registry
 from propainter.inference_propainter_inline import inference_propainter_inline
 from dw_pose import DWposeDetectorInference
-from transformers import AutoImageProcessor, Swin2SRForImageSuperResolution
 
 from core_utils import *
+
+import torch
 
 dcn = lambda x: x.detach().cpu().numpy()
 p = plt.imshow
@@ -27,10 +26,10 @@ class GeneralCoreVideoEditor:
     def __init__(
         self, device, device_additional, propainter_weights,
         sam_checkpoint, pose_detector_path, yolo_pretrained_model,
-        neg_prompt_addition, budget, seed, styles_csv_path,
-        animatediff_path = '/home/ishpuntov/code/animatediff-cli-prompt-travel',
+        neg_prompt_addition, budget, seed,
+        animatediff_path = '/app/libs/animatediff_lib',
         output_dir_animatediff = 'output_result_for_script_call',
-        output_result_folder = '/home/ishpuntov/code/sam-hq/output_results',
+        output_result_folder = '/app/output_results',
         faces_crop_ration = 0.5,
         delate_pix_inpaint_max = 30,
     ):
@@ -39,6 +38,7 @@ class GeneralCoreVideoEditor:
         self.device_additional = device_additional
 
         self.propainter_weights = propainter_weights
+        print('sam_checkpoint', sam_checkpoint)
         self.sam = sam_model_registry['vit_l'](checkpoint=sam_checkpoint)
         self.sam.to(self.device)
         self.predictor = SamPredictor(self.sam)
@@ -54,9 +54,6 @@ class GeneralCoreVideoEditor:
         self.neg_prompt_addition = neg_prompt_addition
         self.budget = budget
         self.seed = seed
-
-        self.styles_map = pd.read_csv(styles_csv_path)
-        self.styles_map.set_index('name', inplace=True)
         
         self.output_folder = Path(output_result_folder)
         self.output_folder.mkdir(exist_ok=True)
@@ -309,7 +306,8 @@ class GeneralCoreVideoEditor:
                 seed=self.seed,
             )
             
-            obj_frames_face = process_image_video(face_crops[0], obj_frames)
+            if is_person:
+                obj_frames_face = process_image_video(face_crops[0], obj_frames)
                 
             bboxes_size = list(map(get_box_size, expand_boxes))
             resize_obj_frames = resize_frames_by_size(obj_frames_face, bboxes_size)

@@ -2,27 +2,24 @@ import os
 import shutil
 import subprocess
 from tqdm import tqdm
-import torch
 import cv2
 from pathlib import Path
 import skvideo.io
 import json
 import matplotlib.pyplot as plt
-import numpy as np
 from skimage.measure import label
-import shutil
-import torch
 import numpy as np
 from PIL import Image
 import tempfile
-from roop import run as roop_run
+from roop.evaluator import run as roop_run
 
 from propainter.inference_propainter_inline import inference_propainter_inline
 from animatediff.cli import generate as animatediff_generate
+import torch
 
-dcn = lambda x: x.detach().cpu().numpy()
-p = plt.imshow
-I = Image.fromarray
+# dcn = lambda x: x.detach().cpu().numpy()
+# p = plt.imshow
+# I = Image.fromarray
 
 
 def frame_extraction(video_path):
