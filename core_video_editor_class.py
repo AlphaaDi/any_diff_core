@@ -22,7 +22,7 @@ p = plt.imshow
 I = Image.fromarray
 
 
-class GeneralCoreVideoEditor:
+class GeneralCoreVideoEditor(torch.nn.Module):
     def __init__(
         self, device, device_additional, propainter_weights,
         sam_checkpoint, pose_detector_path, yolo_pretrained_model,
@@ -35,7 +35,7 @@ class GeneralCoreVideoEditor:
     ):
         torch.cuda.set_device(device)
         self.device = device
-        self.device_additional = device_additional
+        self.device_additional = device
 
         self.propainter_weights = propainter_weights
         print('sam_checkpoint', sam_checkpoint)
@@ -405,12 +405,13 @@ class GeneralCoreVideoEditor:
         
         is_person_arr = [face_crops is not None for face_crops in face_crops_arr]
         
+        self.to('cpu')
         resize_obj_frames_arr, masks_effects_arr = self.finalize_object_processing(
             objects_count, mask_crops_arr, expand_boxes_arr, resize_crops_arr,
             face_crops_arr, prompts, is_person_arr,
             animatediff_config_path, task_id
         )
-        
+        self.to(self.device)
         masks_merge = np.array(mask_track_arr).sum(0)
         masks_merge_dilate = dilate_mask_arr(masks_merge, self.delate_pix_inpaint_max)
         inpainted_frames = self.infer_propainter(masks_merge_dilate, frames)
