@@ -5,18 +5,18 @@ channels:
 channel_priority: disabled
 dependencies:
   - python=3.10.8
-  - cudatoolkit=11.7
+  - cudatoolkit=11.5
   - gcc_linux-64
   - gxx_linux-64
   - pip
   - pip:
-      - torch==2.0.1 --index-url https://download.pytorch.org/whl/cu118
-      - torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cu118
-      - torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu118
+      - torch==2.0.1 --index-url https://download.pytorch.org/whl/cu115
+      - torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cu115
+      - torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu115
       - colorama == 0.4.3
       - cmake == 3.25.0
       - ninja == 1.11.1
-      - numpy == 1.22.4
+      - numpy == 1.24.3
       - pillow == 9.4.0
       - safetensors == 0.3.1
       - sentencepiece==0.1.99
@@ -46,8 +46,7 @@ dependencies:
       - isoduration==20.11.0
       - jaxtyping==0.2.23
       - jsonpointer==2.4
-      - keras==2.15.0
-      - keras-core==0.1.7
+      - keras==2.14.0
       - lightning-utilities==0.9.0
       - lpips==0.1.4
       - matplotlib==3.5.3
@@ -58,6 +57,7 @@ dependencies:
       - nbformat==5.7.0
       - omegaconf==2.3.0
       - onnx==1.15.0
+      - flask
       - onnxruntime==1.16.1
       - onnxruntime-gpu==1.16.2
       - open3d==0.17.0
@@ -69,7 +69,7 @@ dependencies:
       - peft==0.6.2
       - pip==23.3.1
       - progressbar==2.5
-      - protobuf==3.20.2
+      - protobuf==3.20.3
       - psutil==5.9.6
       - pycocotools==2.0.7
       - pycollada==0.7.2
@@ -89,7 +89,8 @@ dependencies:
       - sk-video==1.1.10
       - splines==0.3.0
       - starlette==0.27.0
-      - tensorboard==2.13.0
+      - tensorboard==2.14.0
+      - tensorflow==2.14.0
       - termcolor==2.3.0
       - timm==0.6.7
       - tokenizers==0.13.3
@@ -114,7 +115,3 @@ dependencies:
       - customtkinter==5.2.1
       - tk==0.1.0
       - tkinterdnd2==0.3.0
-      - git+https://github.com/AlphaaDi/dw_pose_lib.git
-      - git+https://github.com/AlphaaDi/propainter_lib.git
-      - git+https://github.com/AlphaaDi/roop_lib.git
-      - git+https://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@github.com/AlphaaDi/animatediff_lib.git
