@@ -45,7 +45,7 @@ def process_video_and_send(video_path, task_id, objects_info, animatediff_config
         video_path, task_id, objects_info, animatediff_config_path)
 
     # Prepare data to send, including the task_id
-    files = {'video': processed_video}
+    files = {'video': open(processed_video, 'rb')}
     data = {'task_id': task_id}
     requests.post(response_url, files=files, data=data)
 
