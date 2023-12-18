@@ -33,7 +33,7 @@ class GeneralCoreVideoEditor(torch.nn.Module):
         faces_crop_ration = 0.5,
         delate_pix_inpaint_max = 30,
     ):
-        super.__init__()
+        super().__init__()
         torch.cuda.set_device(device)
         self.device = device
         self.device_additional = device
