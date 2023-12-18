@@ -297,6 +297,8 @@ class GeneralCoreVideoEditor(torch.nn.Module):
             #     config_path=animatediff_config_path
             # )
             
+            self.to('cpu')
+            torch.cuda.empty_cache()
             obj_frames = run_animatediff_generation(
                 length=len(resize_crops), 
                 width=width,
@@ -306,6 +308,8 @@ class GeneralCoreVideoEditor(torch.nn.Module):
                 out_dir=result_path_out,
                 seed=self.seed,
             )
+            torch.cuda.empty_cache()
+            self.to(self.device)
             
             if is_person:
                 obj_frames_face = process_image_video(face_crops[0], obj_frames)
@@ -406,13 +410,12 @@ class GeneralCoreVideoEditor(torch.nn.Module):
         
         is_person_arr = [face_crops is not None for face_crops in face_crops_arr]
         
-        self.to('cpu')
         resize_obj_frames_arr, masks_effects_arr = self.finalize_object_processing(
             objects_count, mask_crops_arr, expand_boxes_arr, resize_crops_arr,
             face_crops_arr, prompts, is_person_arr,
             animatediff_config_path, task_id
         )
-        self.to(self.device)
+        
         masks_merge = np.array(mask_track_arr).sum(0)
         masks_merge_dilate = dilate_mask_arr(masks_merge, self.delate_pix_inpaint_max)
         inpainted_frames = self.infer_propainter(masks_merge_dilate, frames)
