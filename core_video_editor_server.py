@@ -41,14 +41,16 @@ video_editor = GeneralCoreVideoEditor(
 
 def process_video_and_send(video_path, task_id, objects_info, animatediff_config_path, response_url):
     # Process the video
-    processed_video = video_editor.process_video(
-        video_path, task_id, objects_info, animatediff_config_path)
+    try:
+        processed_video = video_editor.process_video(
+            video_path, task_id, objects_info, animatediff_config_path)
 
-    # Prepare data to send, including the task_id
-    files = {'video': open(processed_video, 'rb')}
-    data = {'task_id': task_id}
-    requests.post(response_url, files=files, data=data)
-
+        # Prepare data to send, including the task_id
+        files = {'video': open(processed_video, 'rb')}
+        data = {'task_id': task_id}
+        requests.post(response_url, files=files, data=data)
+    except BaseException as e:
+        print(e)
     # Update the global status or any other necessary post-processing
     global GLOBAL_STATUS
     GLOBAL_STATUS = 'ready'
