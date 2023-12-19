@@ -575,6 +575,7 @@ def run_animatediff_generation(length, width, height, config_path, device, out_d
         width=width,
         height=height,
         out_dir = Path(out_dir),
+        device = device
     )
     
     first_child = next(out_dir.glob('*'))

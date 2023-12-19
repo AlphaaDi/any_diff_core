@@ -49,9 +49,6 @@ class GeneralCoreVideoEditor(torch.nn.Module):
         self.yolo_detector_model = torch.hub.load('ultralytics/yolov5', yolo_pretrained_model, pretrained=True)
         self.yolo_detector_model = self.yolo_detector_model.to(self.device)
 
-        # self.image_processor = AutoImageProcessor.from_pretrained(image_processor_pretrained)
-        # self.upscaler = Swin2SRForImageSuperResolution.from_pretrained(upscaler_pretrained)
-
         self.neg_prompt_addition = neg_prompt_addition
         self.budget = budget
         self.seed = seed
@@ -64,7 +61,12 @@ class GeneralCoreVideoEditor(torch.nn.Module):
         self.output_dir = output_dir_animatediff
         self.delate_pix_inpaint_max = delate_pix_inpaint_max
         
-
+    def to_device(self, device):
+        self.pose_detector.to(device)
+        self.yolo_detector_model.to(device)
+        self.sam.to(device)
+        self.to(device)
+        torch.cuda.empty_cache()
 
     def get_class_bboxes_yolo(self, image_pil, class_name='person', treshhold = 0.5):
         results = self.yolo_detector_model([image_pil])
@@ -296,9 +298,8 @@ class GeneralCoreVideoEditor(torch.nn.Module):
             #     out_dir=result_path_out,
             #     config_path=animatediff_config_path
             # )
-            
-            self.to('cpu')
-            torch.cuda.empty_cache()
+            self.to_device('cpu')
+
             obj_frames = run_animatediff_generation(
                 length=len(resize_crops), 
                 width=width,
@@ -308,8 +309,7 @@ class GeneralCoreVideoEditor(torch.nn.Module):
                 out_dir=result_path_out,
                 seed=self.seed,
             )
-            torch.cuda.empty_cache()
-            self.to(self.device)
+            self.to_device(self.device)
             
             if is_person:
                 obj_frames_face = process_image_video(face_crops[0], obj_frames)
@@ -415,7 +415,7 @@ class GeneralCoreVideoEditor(torch.nn.Module):
             face_crops_arr, prompts, is_person_arr,
             animatediff_config_path, task_id
         )
-        
+
         masks_merge = np.array(mask_track_arr).sum(0)
         masks_merge_dilate = dilate_mask_arr(masks_merge, self.delate_pix_inpaint_max)
         inpainted_frames = self.infer_propainter(masks_merge_dilate, frames)
