@@ -60,12 +60,12 @@ class GeneralCoreVideoEditor(torch.nn.Module):
         self.faces_crop_ration = faces_crop_ration
         self.output_dir = output_dir_animatediff
         self.delate_pix_inpaint_max = delate_pix_inpaint_max
-        
+
+
     def to_device(self, device):
         self.pose_detector.to(device)
         self.yolo_detector_model.to(device)
         self.sam.to(device)
-        self.to(device)
         torch.cuda.empty_cache()
 
     def get_class_bboxes_yolo(self, image_pil, class_name='person', treshhold = 0.5):
