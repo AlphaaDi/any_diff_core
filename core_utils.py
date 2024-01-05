@@ -14,7 +14,7 @@ import tempfile
 from roop.evaluator import run as roop_run
 
 from propainter.inference_propainter_inline import inference_propainter_inline
-from animatediff.cli import generate as animatediff_generate
+import animatediff.cli as animatediff_cli
 import torch
 
 # dcn = lambda x: x.detach().cpu().numpy()
@@ -569,7 +569,7 @@ def run_animatediff_generation(length, width, height, config_path, device, out_d
     config_path = Path(config_path)
 
     # Generate animation using the provided arguments
-    animatediff_generate(
+    animatediff_cli.generate(
         config_path=config_path,
         length=length,
         width=width,
@@ -577,7 +577,6 @@ def run_animatediff_generation(length, width, height, config_path, device, out_d
         out_dir = Path(out_dir),
         device = device
     )
-    
     first_child = next(out_dir.glob('*'))
     result_frames_folder = first_child / f'00-{seed}'
     obj_frames = read_frames(result_frames_folder)

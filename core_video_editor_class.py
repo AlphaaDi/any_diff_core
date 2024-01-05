@@ -33,13 +33,13 @@ class GeneralCoreVideoEditor(torch.nn.Module):
         faces_crop_ration = 0.5,
         delate_pix_inpaint_max = 30,
     ):
+        print('GeneralCoreVideoEditor')
         super().__init__()
         torch.cuda.set_device(device)
         self.device = device
-        self.device_additional = device
+        self.device_additional = device_additional
 
         self.propainter_weights = propainter_weights
-        print('sam_checkpoint', sam_checkpoint)
         self.sam = sam_model_registry['vit_l'](checkpoint=sam_checkpoint)
         self.sam.to(self.device)
         self.predictor = SamPredictor(self.sam)
@@ -132,10 +132,12 @@ class GeneralCoreVideoEditor(torch.nn.Module):
         masks_merge_pil = [Image.fromarray(mask > 0) for mask in masks]
         skvideo.io.vwrite(video_name, frames)
         dir_path = Path(os.getcwd()) / video_name
+        self.to_device('cpu')
         inpainted_frames = inference_propainter_inline(
             str(dir_path), masks_merge_pil, device=self.device,
             model_dir=self.propainter_weights
         )
+        self.to_device(self.device)
         
         inpainted_frames_upcale = inpainted_frames
         
@@ -289,17 +291,7 @@ class GeneralCoreVideoEditor(torch.nn.Module):
             height, width = int(height), int(width)
             height, width = height // 8 * 8, width //8 * 8
 
-            # run_animatediff_pipe_path = os.path.join(self.animatediff_path, 'run_animatediff_pipe.py')
-            # run_in_conda_env(
-            #     'animatediff',
-            #     run_animatediff_pipe_path,
-            #     length = len(resize_crops), width = width, height = height,
-            #     device = self.device_additional,
-            #     out_dir=result_path_out,
-            #     config_path=animatediff_config_path
-            # )
             self.to_device('cpu')
-
             obj_frames = run_animatediff_generation(
                 length=len(resize_crops), 
                 width=width,
@@ -346,7 +338,8 @@ class GeneralCoreVideoEditor(torch.nn.Module):
                 
                 obj_mask = masks_effects[idx]
                 
-                merge_mask = np.logical_and(obj_mask, org_mask_dil)
+                mask_premerge = np.logical_or(org_mask_crop, obj_mask)
+                merge_mask = np.logical_and(mask_premerge, org_mask_dil)
                 
                 merge_mask = merge_mask.astype(np.uint8)
                 obj_mask_3d = np.repeat(merge_mask[:, :, None], 3, 2)

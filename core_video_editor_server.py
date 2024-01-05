@@ -16,7 +16,7 @@ app = Flask(__name__)
 # Initialize GeneralCoreVideoEditor outside of the request handling function
 parser = argparse.ArgumentParser(description="Arguments for General Core Video Editor")
 parser.add_argument("--device", type=str, default="cuda:0")
-parser.add_argument("--device_additional", type=str, default="cuda:1")
+parser.add_argument("--device_additional", type=str, default="cuda:0")
 parser.add_argument("--artifacts_dir", type=str, default="/app/weights")
 parser.add_argument("--yolo_pretrained_model", type=str, default="yolov5x6")
 parser.add_argument("--neg_prompt_addition", type=str, default=" ,CyberRealistic_Negative-neg.")
@@ -39,13 +39,11 @@ video_editor = GeneralCoreVideoEditor(
     seed=args.seed,
 )
 
-def process_video_and_send(video_path, task_id, objects_info, animatediff_config_path, response_url):
+def process_video_and_send(video_editor, video_path, task_id, objects_info, animatediff_config_path, response_url):
     # Process the video
     try:
         processed_video = video_editor.process_video(
             video_path, task_id, objects_info, animatediff_config_path)
-
-        # Prepare data to send, including the task_id
         files = {'video': open(processed_video, 'rb')}
         data = {'task_id': task_id}
         requests.post(response_url, files=files, data=data)
@@ -88,7 +86,7 @@ def video_processing_endpoint():
     GLOBAL_STATUS = f'work'
     sub_proc = threading.Thread(
         target=process_video_and_send, 
-        args=(storage_video_path, task_id, objects_info, storage_json_path, response_url))
+        args=(video_editor, storage_video_path, task_id, objects_info, storage_json_path, response_url))
     sub_proc.start()
 
     return jsonify({'message': 'Video processing started'}), 202
